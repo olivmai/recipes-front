@@ -23,7 +23,7 @@
                 <md-table-head>Name</md-table-head>
             </md-table-row>
 
-            <md-table-row slot="md-table-row" v-bind:key="recipe.id" v-for="recipe in recipes">
+            <md-table-row slot="md-table-row" v-bind:key="recipe.id" v-for="recipe in apiResults">
                 <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{recipe.id}}</md-table-cell>
                 <md-table-cell md-label="Name" md-sort-by="name">{{recipe.name}}</md-table-cell>
             </md-table-row>
@@ -32,10 +32,20 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'Recipe',
-  props: {
-    recipes: Array
+  data () {
+    return {
+      apiResults: null
+    }
+  },
+  mounted () {
+    axios
+      .get('https://127.0.0.1:8000/api/recipes')
+      .then(response => (this.apiResults = response.data['hydra:member']))
+      
   }
 }
 </script>

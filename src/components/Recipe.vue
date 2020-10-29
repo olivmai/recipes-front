@@ -9,11 +9,17 @@
                     <md-table-row>
                         <md-table-head md-numeric>ID</md-table-head>
                         <md-table-head>Name</md-table-head>
+                        <md-table-head>Edit</md-table-head>
                     </md-table-row>
 
                     <md-table-row slot="md-table-row" v-bind:key="recipe.id" v-for="recipe in apiResults">
                         <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{recipe.id}}</md-table-cell>
                         <md-table-cell md-label="Name" md-sort-by="name">{{recipe.name}}</md-table-cell>
+                        <md-table-cell md-label="Edit" md-sort-by="edit">
+                            <md-button class="md-icon-button md-raised">
+                                <router-link :to="{ name: 'Edit', params: { id: recipe.id }}"><md-icon>edit</md-icon></router-link>
+                            </md-button>
+                        </md-table-cell>
                     </md-table-row>
                 </md-table>
             </md-card-content>
@@ -33,6 +39,11 @@ export default {
   data () {
     return {
       apiResults: null
+    }
+  },
+  methods: {
+    editRecipe(id) {
+        document.location.href = "/"+id+"/edit"
     }
   },
   mounted () {

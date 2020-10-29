@@ -37,13 +37,19 @@ export default {
   methods: {
     save() {
       var recipeId = this.$route.params.id
+      var toasted = this.$toasted
       axios
       .put('https://127.0.0.1:8000/api/recipes/'+recipeId, {
         name: this.recipe.name
       })
       .then(function (response) {
-        console.log(response)
-        document.location.href = '/'
+        if (200 === response.status) {
+          console.log(response)
+          toasted.success('Recipe successfully edited', {
+            icon: 'check',
+          })
+          setTimeout(() => document.location.href = '/', 1500);
+        }
       })
       .catch(function (error) {
         console.log(error)

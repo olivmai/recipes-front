@@ -27,13 +27,19 @@ export default {
   },
   methods: {
     save() {
+      var toasted = this.$toasted
       axios
       .post('https://127.0.0.1:8000/api/recipes', {
         name: this.recipeName
       })
       .then(function (response) {
-        console.log(response)
-        document.location.href = '/'
+        if (201 === response.status) {
+          console.log(response)
+          toasted.success('New recipe successfully added', {
+            icon: 'check',
+          })
+          setTimeout(() => document.location.href = '/', 1500);
+        }
       })
       .catch(function (error) {
         console.log(error)

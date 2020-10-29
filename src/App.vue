@@ -12,4 +12,7 @@
 #app {
   padding: 50px;
 }
+a.link {
+  text-decoration: none !important;
+}
 </style>

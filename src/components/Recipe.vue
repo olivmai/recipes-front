@@ -17,7 +17,7 @@
                         <md-table-cell md-label="Name" md-sort-by="name">{{recipe.name}}</md-table-cell>
                         <md-table-cell md-label="Edit" md-sort-by="edit">
                             <md-button class="md-icon-button md-raised">
-                                <router-link :to="{ name: 'Edit', params: { id: recipe.id }}"><md-icon>edit</md-icon></router-link>
+                                <router-link class="link" :to="{ name: 'Edit', params: { id: recipe.id }}"><md-icon>edit</md-icon></router-link>
                             </md-button>
                         </md-table-cell>
                     </md-table-row>

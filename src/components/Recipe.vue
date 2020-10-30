@@ -23,9 +23,13 @@
                     </md-table-row>
                 </md-table>
             </md-card-content>
-            <md-card-actions>
-                <md-button class="md-raised md-primary" v-on:click="fillTable()">Fill table</md-button>
-                <md-button class="md-raised md-primary" v-on:click="clearTable()">Clear table</md-button>
+            <md-card-actions md-alignment="space-between">
+                <span class="center-span">
+                    <md-button class="md-icon-button" v-on:click="goToFirst()"><md-icon>first_page</md-icon></md-button>
+                    <md-button class="md-icon-button" v-on:click="goToPrevious()"><md-icon>chevron_left</md-icon></md-button>
+                    <md-button class="md-icon-button" v-on:click="goToNext()"><md-icon>chevron_right</md-icon></md-button>
+                    <md-button class="md-icon-button" v-on:click="goToLast()"><md-icon>last_page</md-icon></md-button>
+                </span>
             </md-card-actions>
         </md-card>
     </div>
@@ -38,18 +42,67 @@ export default {
   name: 'Recipe',
   data () {
     return {
-      apiResults: null
+      apiResults: null,
+      pagination: {
+          current: 1,
+          first: 1,
+          next: 1,
+          total: 1,
+          previous: 1
+      }
     }
   },
   methods: {
     editRecipe(id) {
         document.location.href = "/"+id+"/edit"
+    },
+    updatePagination(pagination) {
+        this.pagination.current = pagination["@id"]
+        this.pagination.first = pagination["hydra:first"]
+        this.pagination.total = pagination["hydra:last"] !== undefined ? pagination["hydra:last"] : pagination["hydra:first"]
+        this.pagination.next = pagination["hydra:next"]  !== undefined ? pagination["hydra:next"] : pagination["hydra:first"]
+        this.pagination.previous = pagination["hydra:previous"]  !== undefined ? pagination["hydra:previous"] : pagination["hydra:first"]
+    },
+    updateData(apiResults) {
+        this.apiResults = apiResults
+    },
+    updateState(data) {
+        this.updateData(data["hydra:member"])
+        this.updatePagination(data["hydra:view"])
+    },
+    goToNext() {
+        axios
+        .get('https://127.0.0.1:8000'+this.pagination.next)
+        .then(response => (this.updateState(response.data)))
+    },
+    goToPrevious() {
+        axios
+        .get('https://127.0.0.1:8000'+this.pagination.previous)
+        .then(response => (this.updateState(response.data)))
+    },
+    goToFirst() {
+        axios
+        .get('https://127.0.0.1:8000'+this.pagination.first)
+        .then(response => (this.updateState(response.data)))
+    },
+    goToLast() {
+        axios
+        .get('https://127.0.0.1:8000'+this.pagination.last)
+        .then(response => (this.updateState(response.data)))
     }
   },
   mounted () {
     axios
-      .get('https://127.0.0.1:8000/api/recipes')
-      .then(response => (this.apiResults = response.data['hydra:member']))
+      .get('https://127.0.0.1:8000/api/recipes?page='+this.pagination.current)
+      .then(response => (this.updateState(response.data)))
   }
 }
 </script>
+
+<style scoped>
+  .center-span {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>

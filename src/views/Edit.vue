@@ -21,6 +21,7 @@
 import axios from 'axios'
 
 export default {
+  name: 'Edit',
   data () {
     return {
       recipe: {

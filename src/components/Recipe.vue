@@ -1,5 +1,13 @@
 <template>
     <div>
+        <md-dialog-confirm
+        :md-active.sync="active"
+        md-title="Delete recipe"
+        md-content="Do you really want to delete this recipe ?"
+        md-confirm-text="Delete"
+        md-cancel-text="Cancel"
+        @md-cancel="onCancel"
+        @md-confirm="onConfirm" />
         <md-card>
             <md-card-header>
                 <div class="md-title">Recipes</div>
@@ -16,9 +24,10 @@
                         <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{recipe.id}}</md-table-cell>
                         <md-table-cell md-label="Name" md-sort-by="name">{{recipe.name}}</md-table-cell>
                         <md-table-cell md-label="Edit" md-sort-by="edit">
-                            <md-button class="md-icon-button md-raised">
+                            <md-button class="md-icon-button md-raised md-primary">
                                 <router-link class="link" :to="{ name: 'Edit', params: { id: recipe.id }}"><md-icon>edit</md-icon></router-link>
                             </md-button>
+                            <md-button class="md-icon-button md-accent" v-on:click=alertDeleteRecipe(recipe.id)><md-icon>close</md-icon></md-button>
                         </md-table-cell>
                     </md-table-row>
                 </md-table>
@@ -49,12 +58,36 @@ export default {
           next: 1,
           total: 1,
           previous: 1
-      }
+      },
+      active: false,
+      deleteId: 0
     }
   },
   methods: {
     editRecipe(id) {
         document.location.href = "/"+id+"/edit"
+    },
+    alertDeleteRecipe(id) {
+        this.active = true
+        this.deleteId = id
+    },
+    onConfirm() {
+        var toasted = this.$toasted
+        let self = this
+        axios
+        .delete('https://127.0.0.1:8000/api/recipes/'+this.deleteId)
+        .then(function (response) {
+            if (204 === response.status) {
+                self.deleteId = 0;
+                toasted.success('Recipe successfully deleted', {
+                    icon: 'check',
+                })
+                setTimeout(() => document.location.href = '/', 1500);
+            }
+        })
+    },
+    onCancel() {
+        this.active = false
     },
     updatePagination(pagination) {
         this.pagination.current = pagination["@id"]

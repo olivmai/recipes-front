@@ -23,5 +23,8 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
+      - name: Init vue-cli
+        run: yarn add -D @vue/cli-service-global @vue/cli
+        
       - name: Run lint
         run: yarn lint

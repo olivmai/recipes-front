@@ -9,13 +9,19 @@
                     <md-table-row>
                         <md-table-head md-numeric>ID</md-table-head>
                         <md-table-head>Name</md-table-head>
-                        <md-table-head>Edit</md-table-head>
+                        <md-table-head></md-table-head>
                     </md-table-row>
 
                     <md-table-row slot="md-table-row" v-bind:key="recipe.id" v-for="recipe in apiResults">
                         <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{recipe.id}}</md-table-cell>
-                        <md-table-cell md-label="Name" md-sort-by="name">{{recipe.name}}</md-table-cell>
+                        <md-table-cell md-label="Name" md-sort-by="name">
+                            <router-link class="link" :to="{ name: 'Show', params: { id: recipe.id }}">{{recipe.name}}</router-link>
+                        </md-table-cell>
                         <md-table-cell md-label="Edit" md-sort-by="edit">
+                            <md-button class="md-icon-button md-raised md-primary">
+                                <md-icon>add_shopping_cart</md-icon>
+                                <md-tooltip md-direction="top">Add to shopping list</md-tooltip>
+                            </md-button>
                             <md-button class="md-icon-button md-raised">
                                 <router-link class="link" :to="{ name: 'Edit', params: { id: recipe.id }}"><md-icon>edit</md-icon></router-link>
                             </md-button>
@@ -23,20 +29,16 @@
                     </md-table-row>
                 </md-table>
             </md-card-content>
-            <md-card-actions md-alignment="space-between">
-                <span class="center-span">
-                    <md-button class="md-icon-button" v-on:click="goToFirst()"><md-icon>first_page</md-icon></md-button>
-                    <md-button class="md-icon-button" v-on:click="goToPrevious()"><md-icon>chevron_left</md-icon></md-button>
-                    <md-button class="md-icon-button" v-on:click="goToNext()"><md-icon>chevron_right</md-icon></md-button>
-                    <md-button class="md-icon-button" v-on:click="goToLast()"><md-icon>last_page</md-icon></md-button>
-                </span>
+            <md-card-actions>
+                <PaginationNav />
             </md-card-actions>
         </md-card>
     </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+import PaginationNav from '../components/PaginationNav'
 
 export default {
   name: 'Recipe',
@@ -89,12 +91,18 @@ export default {
         axios
         .get('https://127.0.0.1:8000'+this.pagination.last)
         .then(response => (this.updateState(response.data)))
+    },
+    open(recipeId) {
+        document.location.href = '/'+recipeId+'/show'
     }
   },
   mounted () {
     axios
       .get('https://127.0.0.1:8000/api/recipes?page='+this.pagination.current)
       .then(response => (this.updateState(response.data)))
+  },
+  components: {
+      PaginationNav
   }
 }
 </script>

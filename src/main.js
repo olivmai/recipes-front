@@ -5,6 +5,7 @@ import 'vue-material/dist/vue-material.css'
 import 'vue-material/dist/theme/default.css'
 import router from './router'
 import toasted from 'vue-toasted'
+import store from './store'
 
 Vue.config.productionTip = false
 Vue.use(VueMaterial)
@@ -15,5 +16,6 @@ Vue.use(toasted, {
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')

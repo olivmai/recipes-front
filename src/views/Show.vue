@@ -6,6 +6,7 @@
       </md-card-header>
 
       <md-card-content>
+        <h3>Ingredients</h3>
           <md-list>
               <Ingredient
                 v-bind:key="ingredient.id"
@@ -18,6 +19,9 @@
         <md-button class="md-icon-button md-raised md-primary">
             <md-icon>add_shopping_cart</md-icon>
             <md-tooltip md-direction="top">Add to shopping list</md-tooltip>
+        </md-button>
+        <md-button class="md-icon-button md-raised">
+            <router-link class="link" :to="{ name: 'Edit', params: { id: recipe.id }}"><md-icon>edit</md-icon></router-link>
         </md-button>
       </md-card-actions>
     </md-card>

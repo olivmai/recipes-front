@@ -1,7 +1,7 @@
 <template>
     <div>
       <md-list-item>
-        <md-icon>done</md-icon>
+        <md-icon>label_important</md-icon>
         <span class="md-list-item-text">{{ name }} ({{ quantity }} {{ unity }})</span>
       </md-list-item>
     </div>

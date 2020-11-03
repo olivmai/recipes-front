@@ -118,7 +118,6 @@ export default {
       })
       .then(function (response) {
         if (200 === response.status) {
-          console.log(response)
           toasted.success('Recipe successfully edited', {
             icon: 'check',
           })
@@ -135,10 +134,7 @@ export default {
       let self = this
 
       self.ingredient.recipeId = "/api/recipes/" + recipeId
-      console.log(self.ingredient)
-      console.log(self.ingredient.quantity)
       var quantity = ("" === self.ingredient.quantity) ? 0 : parseInt(self.ingredient.quantity)
-      console.log(quantity)
 
       axios
       .post('https://127.0.0.1:8000/api/ingredients', {
@@ -147,9 +143,7 @@ export default {
         unity: self.ingredient.unity,
         recipe: self.ingredient.recipeId
       })
-      .then(function (response) {
-        console.log(response.data)
-      })
+      .then(response => (self.updateIngredients(response.data)))
       .catch(error => {
         if (undefined !== error.response) {
           toasted.error(error.response.data["hydra:description"], {
@@ -160,9 +154,6 @@ export default {
       })
       .finally(function () {
         self.showDialog = false
-        toasted.success('Ingredient successfully added', {
-          icon: 'check',
-        })
       })
     },
     updateIngredients(ingredient) {

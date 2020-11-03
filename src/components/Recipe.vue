@@ -1,59 +1,33 @@
 <template>
     <div>
-        <md-dialog-confirm
-        :md-active.sync="active"
-        md-title="Delete recipe"
-        md-content="Do you really want to delete this recipe ?"
-        md-confirm-text="Delete"
-        md-cancel-text="Cancel"
-        @md-cancel="onCancel"
-        @md-confirm="onConfirm" />
         <md-card>
             <md-card-header>
                 <div class="md-title">Recipes</div>
             </md-card-header>
             <md-card-content>
-                <md-table>
-                    <md-table-row>
-                        <md-table-head md-numeric>ID</md-table-head>
-                        <md-table-head>Name</md-table-head>
-                        <md-table-head></md-table-head>
-                    </md-table-row>
-
-                    <md-table-row slot="md-table-row" v-bind:key="recipe.id" v-for="recipe in apiResults">
-                        <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{recipe.id}}</md-table-cell>
-                        <md-table-cell md-label="Name" md-sort-by="name">
-                            <router-link class="link" :to="{ name: 'Show', params: { id: recipe.id }}">{{recipe.name}}</router-link>
-                        </md-table-cell>
-                        <md-table-cell md-label="Edit" md-sort-by="edit">
-                            <md-button class="md-icon-button md-raised md-primary">
-                                <md-icon>add_shopping_cart</md-icon>
-                                <md-tooltip md-direction="top">Add to shopping list</md-tooltip>
-                            </md-button>
-                            <md-button class="md-icon-button md-raised">
-                                <router-link class="link" :to="{ name: 'Edit', params: { id: recipe.id }}"><md-icon>edit</md-icon></router-link>
-                            </md-button>
-                            <md-button class="md-icon-button md-accent" v-on:click=alertDeleteRecipe(recipe.id)><md-icon>close</md-icon></md-button>
-                        </md-table-cell>
-                    </md-table-row>
-                </md-table>
+                <List :recipes="recipes" />
             </md-card-content>
             <md-card-actions>
-                <PaginationNav />
+                <PaginationNav v-if="recipes.length > 0" />
             </md-card-actions>
         </md-card>
+
     </div>
 </template>
 
 <script>
 import axios from 'axios'
 import PaginationNav from '../components/PaginationNav'
+import List from '../views/List'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Recipe',
+  computed: {
+      ...mapState(['recipes'])
+  },
   data () {
     return {
-      apiResults: null,
       pagination: {
           current: 1,
           first: 1,
@@ -69,28 +43,6 @@ export default {
     editRecipe(id) {
         document.location.href = "/"+id+"/edit"
     },
-    alertDeleteRecipe(id) {
-        this.active = true
-        this.deleteId = id
-    },
-    onConfirm() {
-        var toasted = this.$toasted
-        let self = this
-        axios
-        .delete('https://127.0.0.1:8000/api/recipes/'+this.deleteId)
-        .then(function (response) {
-            if (204 === response.status) {
-                self.deleteId = 0;
-                toasted.success('Recipe successfully deleted', {
-                    icon: 'check',
-                })
-                setTimeout(() => document.location.href = '/', 1500);
-            }
-        })
-    },
-    onCancel() {
-        this.active = false
-    },
     updatePagination(pagination) {
         this.pagination.current = pagination["@id"]
         this.pagination.first = pagination["hydra:first"]
@@ -98,12 +50,11 @@ export default {
         this.pagination.next = pagination["hydra:next"]  !== undefined ? pagination["hydra:next"] : pagination["hydra:first"]
         this.pagination.previous = pagination["hydra:previous"]  !== undefined ? pagination["hydra:previous"] : pagination["hydra:first"]
     },
-    updateData(apiResults) {
-        this.apiResults = apiResults
-    },
     updateState(data) {
-        this.updateData(data["hydra:member"])
-        this.updatePagination(data["hydra:view"])
+        this.$store.dispatch('addRecipes', data["hydra:member"])
+        if (undefined !== data["hydra:view"]) {
+            this.updatePagination(data["hydra:view"])
+        }
     },
     goToNext() {
         axios
@@ -129,13 +80,14 @@ export default {
         document.location.href = '/'+recipeId+'/show'
     }
   },
-  mounted () {
+  created () {
     axios
       .get('https://127.0.0.1:8000/api/recipes?page='+this.pagination.current)
       .then(response => (this.updateState(response.data)))
   },
   components: {
-      PaginationNav
+      PaginationNav,
+      List
   }
 }
 </script>

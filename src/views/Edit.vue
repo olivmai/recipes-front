@@ -36,26 +36,22 @@
     </md-dialog>
     <md-card>
       <md-card-header>
-        <div class="md-title">Edit recipe #{{ $route.params.id }}</div>
+        <div class="md-title">Edit recipe "{{recipe.name}}"</div>
       </md-card-header>
       <md-card-content>
-        <md-field>
-          <label>Recipe name</label>
-          <md-input v-model="recipe.name">recipe.name</md-input>
-        </md-field>
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item">
+            <md-field>
+              <label>Recipe name</label>
+              <md-input v-model="recipe.name">recipe.name</md-input>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-size-15">
+            <md-button class="md-raised md-primary" v-on:click="save()">Update</md-button>
+          </div>
+        </div>
         <h3>Ingredients</h3>
         <md-list>
-          <md-list-item>
-            <md-avatar>
-              <img src="https://placeimg.com/40/40/people/5" alt="People">
-            </md-avatar>
-
-            <span class="md-list-item-text">Abbey Christansen</span>
-
-            <md-button class="md-icon-button md-list-action">
-              <md-icon class="md-primary">chat_bubble</md-icon>
-            </md-button>
-          </md-list-item>
           <md-list>
               <Ingredient
                 v-bind:key="ingredient.id"
@@ -68,9 +64,6 @@
           <md-tooltip md-direction="right" >Add ingredient</md-tooltip>
         </md-button>
       </md-card-content>
-      <md-card-actions>
-        <md-button class="md-raised md-primary" v-on:click="save()">Update</md-button>
-      </md-card-actions>
     </md-card>
   </div>
 </template>

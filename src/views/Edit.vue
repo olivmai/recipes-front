@@ -1,38 +1,14 @@
 <template>
   <div class="new">
     <md-dialog :md-active.sync="showDialog">
-      <md-dialog-title>Nouvel ingrédient</md-dialog-title>
-
-      <md-content>
-        <div class="md-layout md-gutter md-alignment-space-between ingredient-form-container">
-          <div class="md-layout-item">
-            <md-field md-inline>
-              <label>Nom</label>
-              <md-input v-model="ingredient.name"></md-input>
-            </md-field>
-            
-          </div>
-          <div class="md-layout-item">
-            <md-field md-inline>
-              <label>Quanité</label>
-              <md-input v-model="ingredient.quantity"></md-input>
-            </md-field>
-            
-          </div>
-          <div class="md-layout-item">
-            <md-field md-inline>
-              <label>Unité</label>
-              <md-input v-model="ingredient.unity"></md-input>
-            </md-field>
-            
-          </div>
-        </div>
-      </md-content>
-
-      <md-dialog-actions>
-        <md-button class="md-primary" @click="showDialog = false">Close</md-button>
-        <md-button class="md-raised md-primary" @click="addIngredient()">Save</md-button>
-      </md-dialog-actions>
+        <md-dialog-title>Nouvel ingrédient</md-dialog-title>
+        <md-content>
+            <IngredientForm :ingredient="ingredient" />
+        </md-content>
+        <md-dialog-actions>
+            <md-button class="md-primary" @click="showDialog = false">Close</md-button>
+            <md-button class="md-raised md-primary" @click="addIngredient()">Save</md-button>
+        </md-dialog-actions>
     </md-dialog>
     <md-card>
       <md-card-header>
@@ -72,6 +48,7 @@
 
 import axios from 'axios'
 import Ingredient from '../components/Ingredient'
+import IngredientForm from '../components/IngredientForm'
 
 export default {
   name: 'Edit',
@@ -129,45 +106,49 @@ export default {
       })
     },
     addIngredient() {
-      var recipeId = this.$route.params.id
-      var toasted = this.$toasted
-      let self = this
+        var recipeId = this.$route.params.id
+        var toasted = this.$toasted
+        let self = this
 
-      self.ingredient.recipeId = "/api/recipes/" + recipeId
-      var quantity = ("" === self.ingredient.quantity) ? 0 : parseInt(self.ingredient.quantity)
+        self.ingredient.recipeId = "/api/recipes/" + recipeId
+        var quantity = ("" === self.ingredient.quantity) ? 0 : parseInt(self.ingredient.quantity)
 
-      axios
-      .post('https://127.0.0.1:8000/api/ingredients', {
-        name: self.ingredient.name,
-        quantity: quantity,
-        unity: self.ingredient.unity,
-        recipe: self.ingredient.recipeId
-      })
-      .then(response => (self.updateIngredients(response.data)))
-      .catch(error => {
-        if (undefined !== error.response) {
-          toasted.error(error.response.data["hydra:description"], {
-            icon: 'report_problem',
-            duration: 5000
-          })
-        }
-      })
-      .finally(function () {
-        self.showDialog = false
-      })
+        axios
+        .post('https://127.0.0.1:8000/api/ingredients', {
+            name: self.ingredient.name,
+            quantity: quantity,
+            unity: self.ingredient.unity,
+            recipe: self.ingredient.recipeId
+        })
+        .then(response => (self.updateIngredients(response.data)))
+        .catch(error => {
+            if (undefined !== error.response) {
+            toasted.error(error.response.data["hydra:description"], {
+                icon: 'report_problem',
+                duration: 5000
+            })
+            }
+        })
+        .finally(function () {
+          self.resetIngredient()
+          self.showDialog = false
+        })
     },
     updateIngredients(ingredient) {
       this.ingredients.push(ingredient)
+    },
+    resetIngredient() {
+      this.ingredient = {
+        name: '',
+        quantity: '',
+        unity: '',
+        recipeId: ''
+      }
     }
   },
   components: {
-    Ingredient
+    Ingredient,
+    IngredientForm
   }
 }
 </script>
-
-<style scoped>
-  .ingredient-form-container {
-    padding: 25px;
-  }
-</style>

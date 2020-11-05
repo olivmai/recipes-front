@@ -1,5 +1,14 @@
 <template>
   <div class="new">
+    <!-- Dialog to confirm recipe deletion -->
+      <md-dialog-confirm
+      :md-active.sync="active"
+      md-title="Remove ingredient"
+      md-content="Do you really want to delete this ingredient ?"
+      md-confirm-text="Delete"
+      md-cancel-text="Cancel"
+      @md-cancel="onCancel"
+      @md-confirm="onConfirm" />
     <md-dialog :md-active.sync="showDialog">
         <md-dialog-title>Nouvel ingrédient</md-dialog-title>
         <md-content>
@@ -29,10 +38,17 @@
         <h3>Ingredients</h3>
         <md-list>
           <md-list>
-              <Ingredient
-                v-bind:key="ingredient.id"
-                v-for="ingredient in ingredients"
-                :name="ingredient.name" :quantity="ingredient.quantity" :unity="ingredient.unity" />
+            <div v-for="ingredient in ingredients" v-bind:key="ingredient.id">
+              <div class="md-layout md-gutter">
+                <div class="md-layout-item md-size-80">
+                  <Ingredient
+                  :name="ingredient.name" :quantity="ingredient.quantity" :unity="ingredient.unity" />
+                </div>
+                <div class="md-layout-item">
+                  <md-button class="md-icon-button md-accent" v-on:click=alertDeleteIngredient(ingredient.id)><md-icon>close</md-icon></md-button>
+                </div>
+              </div>
+            </div>
           </md-list>
         </md-list>
         <md-button class="md-icon-button md-raised md-primary" @click="showDialog = true">
@@ -65,7 +81,9 @@ export default {
         recipeId: ''
       },
       ingredients: [],
-      showDialog: false
+      showDialog: false,
+      active: false,
+      deleteId: 0
     }
   },
   mounted() {
@@ -77,7 +95,6 @@ export default {
         self.recipe = response.data
         if (self.recipe.ingredients.length > 0) {
           for (var $i = 0; $i < self.recipe.ingredients.length; $i++) {
-              console.log(self.recipe.ingredients[$i])
               axios
               .get('https://127.0.0.1:8000'+self.recipe.ingredients[$i])
               .then(response => (self.updateIngredients(response.data)))
@@ -137,6 +154,14 @@ export default {
     updateIngredients(ingredient) {
       this.ingredients.push(ingredient)
     },
+    removeIngredient(ingredientId) {
+      this.ingredients.forEach((ingredient, index) => {
+        if (ingredient.id === ingredientId) {
+          console.log(this.ingredients[index])
+          this.ingredients.splice(index, 1)
+        }
+      });
+    },
     resetIngredient() {
       this.ingredient = {
         name: '',
@@ -144,7 +169,40 @@ export default {
         unity: '',
         recipeId: ''
       }
-    }
+    },
+    alertDeleteIngredient(id) {
+        this.active = true
+        this.deleteId = id
+    },
+    onConfirm() {
+        var toasted = this.$toasted
+        let self = this
+        axios
+        .delete('https://127.0.0.1:8000/api/ingredients/'+this.deleteId)
+        .then(function (response) {
+            if (204 === response.status) {
+                toasted.success('Ingredient successfully deleted', {
+                    icon: 'check',
+                })
+            }
+        })
+        .catch(error => {
+            if (undefined !== error.response) {
+                toasted.error(error.response.data["hydra:description"], {
+                    icon: 'report_problem',
+                    duration: 10000
+                })
+            }
+        })
+        .finally(function () {
+            self.removeIngredient(self.deleteId)
+            self.deleteId = 0
+            self.active = false
+        })
+    },
+    onCancel() {
+        this.active = false
+    },
   },
   components: {
     Ingredient,

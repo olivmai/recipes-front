@@ -11,26 +11,32 @@
         @md-confirm="onConfirm" />
 
         <md-table v-if="recipes.length > 0">
-            <md-table-row>
-                <md-table-head md-numeric>ID</md-table-head>
-                <md-table-head>Name</md-table-head>
-                <md-table-head></md-table-head>
-            </md-table-row>
-
             <md-table-row slot="md-table-row" v-bind:key="recipe.id" v-for="recipe in recipes">
-                <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{recipe.id}}</md-table-cell>
                 <md-table-cell md-label="Name" md-sort-by="name">
                     <router-link class="link" :to="{ name: 'Show', params: { id: recipe.id }}">{{recipe.name}}</router-link>
                 </md-table-cell>
                 <md-table-cell md-label="Edit" md-sort-by="edit">
-                    <md-button class="md-icon-button md-raised md-primary">
-                        <md-icon>add_shopping_cart</md-icon>
-                        <md-tooltip md-direction="top">Add to shopping list</md-tooltip>
-                    </md-button>
-                    <md-button class="md-icon-button md-raised">
-                        <router-link class="link" :to="{ name: 'Edit', params: { id: recipe.id }}"><md-icon>edit</md-icon></router-link>
-                    </md-button>
-                    <md-button class="md-icon-button md-accent" v-on:click=alertDeleteRecipe(recipe.id)><md-icon>close</md-icon></md-button>
+                    <md-menu md-size="medium" :md-offset-x="-127" :md-offset-y="-36">
+                        <md-button md-menu-trigger><md-icon>more_vert</md-icon></md-button>
+
+                        <md-menu-content>
+                            <md-menu-item>
+                                <md-button class="md-raised md-primary">
+                                    <md-icon>add_shopping_cart</md-icon> Ajouter à la liste
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button class="link" :to="{ name: 'Edit', params: { id: recipe.id }}">
+                                    <md-icon>edit</md-icon> Modifier
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button class="md-accent" v-on:click=alertDeleteRecipe(recipe.id)>
+                                    <md-icon>close</md-icon> Supprimer
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
                 </md-table-cell>
             </md-table-row>
         </md-table>

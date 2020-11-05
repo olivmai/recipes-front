@@ -2,7 +2,7 @@
     <div>
         <md-card>
             <md-card-header>
-                <div class="md-title">Recipes</div>
+                <div class="md-title">Mes recettes</div>
             </md-card-header>
             <md-card-content>
                 <List :recipes="recipes" />

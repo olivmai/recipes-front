@@ -1,6 +1,15 @@
 <template>
   <div class="new">
-    <IngredientDialogForm :show="showDialog" :ingredient="ingredient"/>
+    <md-dialog :md-active.sync="showDialog">
+        <md-dialog-title>Nouvel ingrédient</md-dialog-title>
+        <md-content>
+            <IngredientForm :ingredient="ingredient" />
+        </md-content>
+        <md-dialog-actions>
+            <md-button class="md-primary" @click="showDialog = false">Close</md-button>
+            <md-button class="md-raised md-primary" @click="addIngredient()">Save</md-button>
+        </md-dialog-actions>
+    </md-dialog>
     <md-card>
       <md-card-header>
         <div class="md-title">Edit recipe "{{recipe.name}}"</div>
@@ -39,7 +48,7 @@
 
 import axios from 'axios'
 import Ingredient from '../components/Ingredient'
-import IngredientDialogForm from '../components/IngredientDialogForm'
+import IngredientForm from '../components/IngredientForm'
 
 export default {
   name: 'Edit',
@@ -96,13 +105,50 @@ export default {
         console.log(error)
       })
     },
+    addIngredient() {
+        var recipeId = this.$route.params.id
+        var toasted = this.$toasted
+        let self = this
+
+        self.ingredient.recipeId = "/api/recipes/" + recipeId
+        var quantity = ("" === self.ingredient.quantity) ? 0 : parseInt(self.ingredient.quantity)
+
+        axios
+        .post('https://127.0.0.1:8000/api/ingredients', {
+            name: self.ingredient.name,
+            quantity: quantity,
+            unity: self.ingredient.unity,
+            recipe: self.ingredient.recipeId
+        })
+        .then(response => (self.updateIngredients(response.data)))
+        .catch(error => {
+            if (undefined !== error.response) {
+            toasted.error(error.response.data["hydra:description"], {
+                icon: 'report_problem',
+                duration: 5000
+            })
+            }
+        })
+        .finally(function () {
+          self.resetIngredient()
+          self.showDialog = false
+        })
+    },
     updateIngredients(ingredient) {
       this.ingredients.push(ingredient)
+    },
+    resetIngredient() {
+      this.ingredient = {
+        name: '',
+        quantity: '',
+        unity: '',
+        recipeId: ''
+      }
     }
   },
   components: {
     Ingredient,
-    IngredientDialogForm
+    IngredientForm
   }
 }
 </script>

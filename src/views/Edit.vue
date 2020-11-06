@@ -15,24 +15,24 @@
             <IngredientForm :ingredient="ingredient" />
         </md-content>
         <md-dialog-actions>
-            <md-button class="md-primary" @click="showDialog = false">Close</md-button>
-            <md-button class="md-raised md-primary" @click="addIngredient()">Save</md-button>
+            <md-button class="md-primary" @click="showDialog = false">Fermer</md-button>
+            <md-button class="md-raised md-primary" @click="addIngredient()">Enregistrer</md-button>
         </md-dialog-actions>
     </md-dialog>
     <md-card>
       <md-card-header>
-        <div class="md-title">Edit recipe "{{recipe.name}}"</div>
+        <div class="md-title">Modification : "{{recipe.name}}"</div>
       </md-card-header>
       <md-card-content>
         <div class="md-layout md-gutter">
-          <div class="md-layout-item">
+          <div class="md-layout-item md-small-size-100">
             <md-field>
-              <label>Recipe name</label>
+              <label>Nom de la recette</label>
               <md-input v-model="recipe.name">recipe.name</md-input>
             </md-field>
           </div>
-          <div class="md-layout-item md-size-15">
-            <md-button class="md-raised md-primary" v-on:click="save()">Update</md-button>
+          <div class="md-layout-item md-size-15 md-small-size-100 recipe-update-button">
+            <md-button class="md-raised md-primary" v-on:click="save()">Modifier</md-button>
           </div>
         </div>
         <h3>Ingredients</h3>
@@ -48,12 +48,13 @@
                   <md-button class="md-icon-button md-accent" v-on:click=alertDeleteIngredient(ingredient.id)><md-icon>close</md-icon></md-button>
                 </div>
               </div>
+              <md-divider></md-divider>
             </div>
           </md-list>
         </md-list>
         <md-button class="md-icon-button md-raised md-primary" @click="showDialog = true">
           <md-icon>add</md-icon>
-          <md-tooltip md-direction="right" >Add ingredient</md-tooltip>
+          <md-tooltip md-direction="right" >Nouvel ingredient</md-tooltip>
         </md-button>
       </md-card-content>
     </md-card>
@@ -210,3 +211,16 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  @media (max-width: 959px) and (max-width: 600px) {
+    .recipe-update-button {
+      padding: 0;
+      margin: 0;
+    }
+    .recipe-update-button .md-button {
+      margin: 0;
+      top: -15px;
+    }
+  }
+</style>

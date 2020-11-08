@@ -17,8 +17,8 @@
 
 <script>
 import axios from 'axios'
-import PaginationNav from '../components/PaginationNav'
-import List from '../views/List'
+import PaginationNav from '../app/PaginationNav'
+import List from '../../views/recipe/List'
 import { mapState } from 'vuex'
 
 export default {

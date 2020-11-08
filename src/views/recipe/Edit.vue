@@ -64,8 +64,8 @@
 <script>
 
 import axios from 'axios'
-import Ingredient from '../components/Ingredient'
-import IngredientForm from '../components/IngredientForm'
+import Ingredient from '../../components/ingredient/Ingredient'
+import IngredientForm from '../../components/ingredient/IngredientForm'
 
 export default {
   name: 'Edit',

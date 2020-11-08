@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Recipe from '@/components/Recipe.vue'
+import Recipe from '@/components/recipe/Recipe.vue'
 
 Vue.use(VueRouter)
 
@@ -13,20 +13,17 @@ const routes = [
   {
     path: '/new',
     name: 'New',
-    // route level code-splitting
-    // this generates a separate chunk (new.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "new" */ '../views/New.vue')
+    component: () => import(/* webpackChunkName: "new" */ '../views/recipe/New.vue')
   },
   {
     path: '/:id/edit',
     name: 'Edit',
-    component: () => import(/* webpackChunkName: "new" */ '../views/Edit.vue')
+    component: () => import(/* webpackChunkName: "new" */ '../views/recipe/Edit.vue')
   },
   {
     path: '/:id/show',
     name: 'Show',
-    component: () => import(/* webpackChunkName: "new" */ '../views/Show.vue')
+    component: () => import(/* webpackChunkName: "new" */ '../views/recipe/Show.vue')
   }
 ]
 

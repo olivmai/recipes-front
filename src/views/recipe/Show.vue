@@ -30,7 +30,7 @@
 <script>
 
 import axios from 'axios'
-import Ingredient from '../components/Ingredient'
+import Ingredient from '../../components/ingredient/Ingredient'
 
 export default {
   name: 'Show',

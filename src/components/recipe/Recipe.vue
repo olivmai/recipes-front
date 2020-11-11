@@ -1,17 +1,8 @@
 <template>
     <div>
-        <md-card>
-            <md-card-header>
-                <div class="md-title">Mes recettes</div>
-            </md-card-header>
-            <md-card-content>
-                <List :recipes="recipes" />
-            </md-card-content>
-            <md-card-actions>
-                <PaginationNav v-if="recipes.length > 0" />
-            </md-card-actions>
-        </md-card>
-
+        <div class="md-title">Mes recettes</div>
+        <List :recipes="recipes" />
+        <PaginationNav v-if="recipes.length > 0" />
     </div>
 </template>
 
@@ -20,6 +11,11 @@ import axios from 'axios'
 import PaginationNav from '../app/PaginationNav'
 import List from '../../views/recipe/List'
 import { mapState } from 'vuex'
+
+const token = localStorage.getItem('api-token')
+if (token) {
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+}
 
 export default {
   name: 'Recipe',
@@ -80,10 +76,16 @@ export default {
         document.location.href = '/'+recipeId+'/show'
     }
   },
+  beforeCreate () {
+    if (!localStorage.getItem('api-token')) {
+        this.$router.push('/login')
+    }
+  },
   created () {
     axios
       .get('https://127.0.0.1:8000/api/recipes?page='+this.pagination.current)
       .then(response => (this.updateState(response.data)))
+      .catch((error) => console.log(error.response))
   },
   components: {
       PaginationNav,

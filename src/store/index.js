@@ -5,7 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    recipes: []
+    recipes: [],
+    token: localStorage.getItem('api-token')
   },
   mutations: {
     ADD_RECIPE(state, recipe = {}) {

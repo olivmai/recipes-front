@@ -21,7 +21,7 @@
     </md-dialog>
     <md-card>
       <md-card-header>
-        <div class="md-title">Modification : "{{recipe.name}}"</div>
+        <div class="md-title">{{recipe.name}}</div>
       </md-card-header>
       <md-card-content>
         <div class="md-layout md-gutter">
@@ -141,10 +141,10 @@ export default {
         .then(response => (self.updateIngredients(response.data)))
         .catch(error => {
             if (undefined !== error.response) {
-            toasted.error(error.response.data["hydra:description"], {
-                icon: 'report_problem',
-                duration: 5000
-            })
+              toasted.error(error.response.data["hydra:description"], {
+                  icon: 'report_problem',
+                  duration: 5000
+              })
             }
         })
         .finally(function () {
@@ -213,6 +213,9 @@ export default {
 </script>
 
 <style scoped>
+  .md-card-header .md-title {
+    text-align: center;
+  }
   @media (max-width: 959px) and (max-width: 600px) {
     .recipe-update-button {
       padding: 0;

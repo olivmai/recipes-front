@@ -27,9 +27,6 @@ export default {
       registeredRecipe: Object
     }
   },
-  mounted () {
-    console.log(this.$router.currentRoute.path)
-  },
   methods: {
     save() {
       var toasted = this.$toasted

@@ -5,7 +5,9 @@
         <md-button class="md-icon-button" @click="showNavigation = true">
           <md-icon>menu</md-icon>
         </md-button>
-        <span class="md-title">My Title</span>
+        <span class="md-title">
+          <router-link :to="{name: 'Home'}">Liste de courses</router-link>
+        </span>
       </md-toolbar>
 
       <md-drawer :md-active.sync="showNavigation" md-swipeable>
@@ -55,6 +57,10 @@
 </script>
 
 <style>
+#app .page-container .md-title a {
+  color: #fff;
+  text-decoration: none;
+}
 .page-container {
   min-height: 100vh;
   overflow: hidden;

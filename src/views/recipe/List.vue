@@ -10,7 +10,36 @@
         @md-cancel="onCancel"
         @md-confirm="onConfirm" />
 
-        <md-table v-if="recipes.length > 0">
+        <md-list v-if="recipes.length > 0">
+            <md-list-item v-bind:key="recipe.id" v-for="recipe in recipes">
+                <span class="md-list-item-text">
+                    <router-link class="link" :to="{ name: 'Show', params: { id: recipe.id }}">{{recipe.name}}</router-link>
+                </span>
+                <md-menu md-size="medium" :md-offset-x="-127" :md-offset-y="-36">
+                    <md-button md-menu-trigger><md-icon>more_vert</md-icon></md-button>
+
+                    <md-menu-content>
+                        <md-menu-item>
+                            <md-button class="md-raised md-primary">
+                                <md-icon>add_shopping_cart</md-icon> Ajouter à la liste
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button class="link" :to="{ name: 'Edit', params: { id: recipe.id }}">
+                                <md-icon>edit</md-icon> Modifier
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button class="md-accent" v-on:click=alertDeleteRecipe(recipe.id)>
+                                <md-icon>close</md-icon> Supprimer
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+            </md-list-item>
+        </md-list>
+
+        <!--<md-table v-if="recipes.length > 0">
             <md-table-row slot="md-table-row" v-bind:key="recipe.id" v-for="recipe in recipes">
                 <md-table-cell md-label="Name" md-sort-by="name">
                     <router-link class="link" :to="{ name: 'Show', params: { id: recipe.id }}">{{recipe.name}}</router-link>
@@ -39,7 +68,7 @@
                     </md-menu>
                 </md-table-cell>
             </md-table-row>
-        </md-table>
+        </md-table>-->
         <md-empty-state v-else
             md-icon="search_off"
             md-label="No recipe found"
